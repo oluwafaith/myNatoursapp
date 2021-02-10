@@ -1,16 +1,16 @@
 import createError, { HttpError } from 'http-errors';
-import express, { Request, Response, NextFunction} from 'express';
+import express, {Application, Request, Response, NextFunction} from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+import indexRouter from './routes/index';
+import usersRouter from './routes/users';
 
-var app = express();
+const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+// app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
@@ -28,7 +28,7 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err:HttpError, req:Request, res:Response, next:NextFunction) {
+app.use(function(err:any, req:Request, res:Response, next:NextFunction) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -38,4 +38,4 @@ app.use(function(err:HttpError, req:Request, res:Response, next:NextFunction) {
   res.render('error');
 });
 
-module.exports = app;
+export default app;
