@@ -8,9 +8,11 @@ var express_1 = __importDefault(require("express"));
 var path_1 = __importDefault(require("path"));
 var cookie_parser_1 = __importDefault(require("cookie-parser"));
 var morgan_1 = __importDefault(require("morgan"));
+var dotenv_1 = __importDefault(require("dotenv"));
 var index_1 = __importDefault(require("./routes/index"));
 var users_1 = __importDefault(require("./routes/users"));
 var app = express_1.default();
+dotenv_1.default.config({ path: 'config.env' });
 // view engine setup
 app.set('views', path_1.default.join(__dirname, '..', 'views'));
 app.set('view engine', 'ejs');
@@ -19,7 +21,6 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(cookie_parser_1.default());
 app.use(express_1.default.static(path_1.default.join(__dirname, '..', 'public')));
-// app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/v1/tours', index_1.default);
 app.use('/api/v1/users', users_1.default);
 // catch 404 and forward to error handler
