@@ -8,6 +8,7 @@ import {
     checkID,
     checkBody
   } from "../controllers/tourController";
+  
 import app from '../app';
 const router = express.Router();
 
@@ -25,15 +26,6 @@ router
 .patch(updateTour)
 .delete(deleteTour)
 
-// router.get('/api/v1/tours',getAllTours );
-
-// router.get('/api/v1/tours/:id', getTour);
-
-// router.post('/api/v1/tours',createTour)
-
-// router.patch('/api/v1/tours/:id', updateTour);
-
-// router.delete('/api/v1/tours/:id', deleteTour);
 
 
 export default router;

@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTour = exports.updateTour = exports.createTour = exports.getTour = exports.getAllTours = exports.checkBody = exports.checkID = void 0;
 var fs_1 = __importDefault(require("fs"));
-var tours = JSON.parse(fs_1.default.readFileSync("./src/dev-data/data/tours-simple.json", 'utf-8'));
+// const tours = JSON.parse(
+//     fs.readFileSync(`./src/dev-data/data/tours-simple.json`, 'utf-8')
+//   )
 exports.checkID = function (req, res, next, val) {
     var id = Number(req.params.id);
     if (id > tours.length) {

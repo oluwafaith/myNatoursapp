@@ -1,8 +1,10 @@
 import express from "express";
 import fs from 'fs';
-const tours = JSON.parse(
-    fs.readFileSync(`./src/dev-data/data/tours-simple.json`, 'utf-8')
-  )
+import Tour from './../models/tourModels';
+
+// const tours = JSON.parse(
+//     fs.readFileSync(`./src/dev-data/data/tours-simple.json`, 'utf-8')
+//   )
 
   export const checkID = (req: express.Request, res: express.Response, next: express.NextFunction, val: any)=>{
     const id = Number(req.params.id)

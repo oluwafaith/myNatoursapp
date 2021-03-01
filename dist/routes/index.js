@@ -17,9 +17,4 @@ router
     .get(tourController_1.getTour)
     .patch(tourController_1.updateTour)
     .delete(tourController_1.deleteTour);
-// router.get('/api/v1/tours',getAllTours );
-// router.get('/api/v1/tours/:id', getTour);
-// router.post('/api/v1/tours',createTour)
-// router.patch('/api/v1/tours/:id', updateTour);
-// router.delete('/api/v1/tours/:id', deleteTour);
 exports.default = router;
