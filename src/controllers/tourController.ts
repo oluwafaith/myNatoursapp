@@ -82,15 +82,21 @@ res.status(404).json({
    }
   }
   
-  export const deleteTour = (req: express.Request, res: express.Response, next: express.NextFunction)=> {
-   
-  
+  export const deleteTour = async(req: express.Request, res: express.Response, next: express.NextFunction)=> {
+   try {
+    await Tour.findByIdAndDelete(req.params.id);
+
     res.status(204).json({
       status: 'success',
-      data: {
-        tour: "null"
-      }
-    })
+      data: null
+    });
+   } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err
+    });
+   }
+  
   }
   
   
