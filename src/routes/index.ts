@@ -5,20 +5,20 @@ import {
    getTour,
     updateTour, 
     deleteTour, 
-    checkID,
-    checkBody
+    // checkID,
+    // checkBody
   } from "../controllers/tourController";
-  
+
 import app from '../app';
 const router = express.Router();
 
 // /* GET home page. */
-router.param('id', checkID)
+// router.param('id', checkID)
 
 router
 .route('/')
 .get(getAllTours)
-.post( checkBody,createTour)
+.post(createTour)
 
 router
 .route('/:id')

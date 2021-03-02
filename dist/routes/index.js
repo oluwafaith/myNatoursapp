@@ -7,11 +7,11 @@ var express_1 = __importDefault(require("express"));
 var tourController_1 = require("../controllers/tourController");
 var router = express_1.default.Router();
 // /* GET home page. */
-router.param('id', tourController_1.checkID);
+// router.param('id', checkID)
 router
     .route('/')
     .get(tourController_1.getAllTours)
-    .post(tourController_1.checkBody, tourController_1.createTour);
+    .post(tourController_1.createTour);
 router
     .route('/:id')
     .get(tourController_1.getTour)

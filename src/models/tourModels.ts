@@ -19,4 +19,5 @@ import mongoose from 'mongoose';
 
 const Tour = mongoose.model('Tour', tourSchema);
 
+
 export default Tour;
