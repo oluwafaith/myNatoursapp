@@ -61,31 +61,29 @@ res.status(404).json({
   }
   }
 
-  export const updateTour = (req: express.Request, res: express.Response, next: express.NextFunction)=> {
-    // const id = Number(req.params.id)
-    // if(id > tours.length){
-    //   return res.status(404).json({
-    //     status: "fail",
-    //     message: "Invalid id"
-    //   })
-    // }
-  
+  export const updateTour = async(req: express.Request, res: express.Response, next: express.NextFunction)=> {
+   try {
+     const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+
     res.status(200).json({
       status: 'success',
       data: {
         tour: "updated tour"
       }
     })
+   } catch (err) {
+     res.status(404).json({
+      status: 'fail',
+      message: err
+    });
+   }
   }
   
   export const deleteTour = (req: express.Request, res: express.Response, next: express.NextFunction)=> {
-    // const id = Number(req.params.id)
-    // if(id > tours.length){
-    //   return res.status(404).json({
-    //     status: "fail",
-    //     message: "Invalid id"
-    //   })
-    // }
+   
   
     res.status(204).json({
       status: 'success',
