@@ -1,65 +1,52 @@
 import express from "express";
-// import fs from 'fs';
 import Tour from '../models/tourModels';
 
-// const tours = JSON.parse(
-//     fs.readFileSync(`./src/dev-data/data/tours-simple.json`, 'utf-8')
-//   )
+  
+ export const getAllTours = async(req: express.Request, res: express.Response, next: express.NextFunction)=> {
+  // const features = new APIFeatures(Tour.find(), req.query)
+  // .filter()
+  // .sort()
+  // .limitFields()
+  // .paginate();
+  try{
+const tours = await Tour.find();
 
-  // export const checkID = (req: express.Request, res: express.Response, next: express.NextFunction, val: any)=>{
-  //   const id = Number(req.params.id)
-  //   // if(id > tours.length){
-  //   //     return res.status(404).json({
-  //   //       status: "fail",
-  //   //       message: "Invalid id"
-  //   //     })
-  //   //   }
-  //     next()
-  // }
-  
-  // export const checkBody = (req: express.Request, res: express.Response, next: express.NextFunction)=>{
-  //     if(!req.body.name || !req.body.price){
-  //         return res.status(400).json({
-  //             status: 'fail',
-  //              message: 'missing name or price'
-  //         })
-  //     }
-  //     next()
-  // }
-  
- export const getAllTours = (req: express.Request, res: express.Response, next: express.NextFunction)=> {
-    // res.status(200).json({
-    //   status: 'success',
-    //   results: tours.length,
-    //   data: {
-    //     tours
-    //   }
-    // })
+res.status(200).json({
+  status: 'success',
+  results: tours.length,
+  data: {
+    tours
+  }
+});
+} catch (err) {
+res.status(404).json({
+  status: 'fail',
+  message: err
+});
+}
   }
   
-  export const getTour = (req: express.Request, res: express.Response, next: express.NextFunction)=> {
-    const id = Number(req.params.id)
-    // if(id > tours.length){
-    //   return res.status(404).json({
-    //     status: "fail",
-    //     message: "Invalid id"
-    //   })
-    // }
-    //  const tour = tours.find((el: { id: number; }) => el.id === id)
-    // res.status(200).json({
-    //   status: 'success',
-    //   data: {
-    //     tour
-    //   }
-    // })
+  export const getTour = async(req: express.Request, res: express.Response, next: express.NextFunction)=> {
+    try {
+      const tour = await Tour.findById(req.params.id);
+      res.status(200).json({
+        status: 'success',
+        data: {
+          tour
+        }
+      });
+    } catch (err) {
+      res.status(400).json({
+        status: 'fail',
+        message: err.message
+      });
+    }
   }
   
   export const createTour = async(req: express.Request, res: express.Response, next: express.NextFunction) =>{
     try {
-    console.log(">>>>>>>>>>>>>>>>>>>>>");
+
     const newTour = await Tour.create(req.body);
-    console.log(newTour);
-    
     res.status(201).json({
       status: 'success',
       data: {

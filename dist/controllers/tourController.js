@@ -40,66 +40,71 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTour = exports.updateTour = exports.createTour = exports.getTour = exports.getAllTours = void 0;
-// import fs from 'fs';
 var tourModels_1 = __importDefault(require("../models/tourModels"));
-// const tours = JSON.parse(
-//     fs.readFileSync(`./src/dev-data/data/tours-simple.json`, 'utf-8')
-//   )
-// export const checkID = (req: express.Request, res: express.Response, next: express.NextFunction, val: any)=>{
-//   const id = Number(req.params.id)
-//   // if(id > tours.length){
-//   //     return res.status(404).json({
-//   //       status: "fail",
-//   //       message: "Invalid id"
-//   //     })
-//   //   }
-//     next()
-// }
-// export const checkBody = (req: express.Request, res: express.Response, next: express.NextFunction)=>{
-//     if(!req.body.name || !req.body.price){
-//         return res.status(400).json({
-//             status: 'fail',
-//              message: 'missing name or price'
-//         })
-//     }
-//     next()
-// }
-exports.getAllTours = function (req, res, next) {
-    // res.status(200).json({
-    //   status: 'success',
-    //   results: tours.length,
-    //   data: {
-    //     tours
-    //   }
-    // })
-};
-exports.getTour = function (req, res, next) {
-    var id = Number(req.params.id);
-    // if(id > tours.length){
-    //   return res.status(404).json({
-    //     status: "fail",
-    //     message: "Invalid id"
-    //   })
-    // }
-    //  const tour = tours.find((el: { id: number; }) => el.id === id)
-    // res.status(200).json({
-    //   status: 'success',
-    //   data: {
-    //     tour
-    //   }
-    // })
-};
-exports.createTour = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var newTour, err_1;
+exports.getAllTours = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var tours, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                console.log(">>>>>>>>>>>>>>>>>>>>>");
+                return [4 /*yield*/, tourModels_1.default.find()];
+            case 1:
+                tours = _a.sent();
+                res.status(200).json({
+                    status: 'success',
+                    results: tours.length,
+                    data: {
+                        tours: tours
+                    }
+                });
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                res.status(404).json({
+                    status: 'fail',
+                    message: err_1
+                });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.getTour = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var tour, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, tourModels_1.default.findById(req.params.id)];
+            case 1:
+                tour = _a.sent();
+                res.status(200).json({
+                    status: 'success',
+                    data: {
+                        tour: tour
+                    }
+                });
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                res.status(400).json({
+                    status: 'fail',
+                    message: err_2.message
+                });
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.createTour = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var newTour, err_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
                 return [4 /*yield*/, tourModels_1.default.create(req.body)];
             case 1:
                 newTour = _a.sent();
-                console.log(newTour);
                 res.status(201).json({
                     status: 'success',
                     data: {
@@ -108,10 +113,10 @@ exports.createTour = function (req, res, next) { return __awaiter(void 0, void 0
                 });
                 return [3 /*break*/, 3];
             case 2:
-                err_1 = _a.sent();
+                err_3 = _a.sent();
                 res.status(400).json({
                     status: 'fail',
-                    message: err_1.message
+                    message: err_3.message
                 });
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
