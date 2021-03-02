@@ -4,15 +4,27 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+const mongoose = require("mongoose")
+var app = require('../dist/app').default;
 var debug = require('debug')('mynatoursapi:server');
 var http = require('http');
+
+
+// momgoose
+const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD)
+mongoose.connect(DB,{
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false
+}).then(() =>  console.log(' db connection successful'))
+
+
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**

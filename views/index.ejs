@@ -1,11 +1,260 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Todo App</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <div class="container">
+      <h2 class="text-center">Todo App</h2>
+      <div class="row justify-content-center">
+        <div class="col-xs-12">
+          <div class="mb-3 input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">🔍</span>
+            </div>
+            <input
+              id="search-input"
+              type="text"
+              class="form-control"
+              placeholder="Search"
+              aria-label="Search"
+            />
+          </div>
+        </div>
+      </div>
+      <span class="text-muted" id="edit-text"></span>
+      <main>
+        <form id="todo-form">
+          <div class="mb-3 input-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Todo Text"
+              aria-label="Enter todo Text"
+              autocomplete="off"
+              id="todo-input"
+            />
+            <div class="input-group-append">
+              <button
+                id="todo-btn"
+                class="btn btn-outline-secondary"
+                type="submit"
+              >
+                Add Todo
+              </button>
+            </div>
+          </div>
+        </form>
+        <hr />
+        <ul class="list-group" id="todo-list"></ul>
+      </main>
+    </div>
+    <template id="todo-item">
+      <li class="list-group-item">
+        <p class="lead"></p>
+        <span class="text-muted"></span>
+        <div class="float-right">
+          <button
+            class="btn btn-default btn-xs copy-btn"
+            aria-label="Copy Todo Item"
+          >
+            💾
+          </button>
+          <button
+            class="btn btn-default btn-xs edit-btn"
+            aria-label="Edit Todo Item"
+          >
+            ✏️
+          </button>
+          <button
+            class="btn btn-default btn-xs delete-btn"
+            aria-label="Delete Todo Item"
+          >
+            ❌
+          </button>
+        </div>
+      </li>
+    </template>
+    <script>
+      const todoInput = document.getElementById('todo-input');
+      const todoForm = document.getElementById('todo-form');
+      const todoList = document.getElementById('todo-list');
+      const template = document.querySelector('#todo-item');
+      const todoBtn = document.getElementById('todo-btn');
+      const editText = document.getElementById('edit-text');
+      const searchInput = document.getElementById('search-input');
+      const allTodos = [];
+      /**
+       * Format date to the format Wednesday, 18 December 2019, 02:39
+       * documentation is at https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
+       * @params {date|string|number} date The date to format
+       * @returns {string} A date string in the format Wednesday, 18 December 2019, 02:39
+       */
+      function formatDate(date) {
+        const options = {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        };
+        return new Date(date).toLocaleString('en-gb', options);
+      }
+      function addTodo(...todos) {
+        const list = document.createDocumentFragment();
+        todos.forEach((todo) => {
+          const clone = document.importNode(template.content, true);
+          const listItem = clone.querySelector('li');
+          const todoText = clone.querySelector('p');
+          const todoTime = clone.querySelector('.text-muted');
+          const todoEditBtn = clone.querySelector('.edit-btn');
+          const todoDeleteBtn = clone.querySelector('.delete-btn');
+          const todoCopyBtn = clone.querySelector('.copy-btn');
+          listItem.dataset.todoId = todo.id;
+          todoText.textContent = todo.text;
+          todoTime.textContent = formatDate(todo.created);
+          todoEditBtn.addEventListener('click', editTodo.bind(null, todo.id));
+          todoDeleteBtn.addEventListener(
+            'click',
+            deleteTodo.bind(null, todo.id)
+          );
+          todoCopyBtn.addEventListener('click', copyTodo.bind(null, todo.text));
+          list.appendChild(clone);
+        });
+        todoList.appendChild(list);
+      }
+      function editTodo(todoID) {
+        const listItem = todoList.querySelector(`[data-todo-id="${todoID}"]`);
+        const todoText = listItem.querySelector('p').textContent;
+        editText.textContent = `Editing todo: ${todoText}`;
+        todoBtn.textContent = 'Save Todo';
+        todoInput.value = todoText;
+        todoForm.dataset.todoId = todoID;
+      }
+      function deleteTodo(todoID) {
+        //Todo: Add a prompt for confirmation.
+        const todoIndex = allTodos.findIndex((todo) => todo.id === todoID);
+        allTodos.splice(todoIndex, 1);
+        todoList.querySelector(`[data-todo-id="${todoID}"]`).remove();
+        persistTodos();
+      }
+      function copyTodo(todoText) {
+        navigator.permissions
+          .query({ name: 'clipboard-write' })
+          .then((result) => {
+            if (result.state === 'granted') {
+              const type = 'text/plain';
+              const blob = new Blob([todoText], { type });
+              let data = [new ClipboardItem({ [type]: blob })];
+              navigator.clipboard.write(data).then(
+                function () {
+                  alert('copied successfully');
+                },
+                function () {
+                  alert('copy failed');
+                }
+              );
+            }
+          })
+          .catch(() => {
+            alert('You need to grant permission to copy');
+          });
+      }
+      function createTodo(text) {
+        const createdDate = new Date();
+        const todo = {
+          text,
+          id: createdDate.getTime(),
+          created: createdDate.toISOString(),
+        };
+        allTodos.push(todo);
+        addTodo(todo);
+        todoInput.value = '';
+      }
+      function updateTodo(todo) {
+        const listItem = todoList.querySelector(`[data-todo-id="${todo.id}"]`);
+        if (!listItem) {
+          return; // We can't find the todo in the DOM
+        }
+        listItem.querySelector('p').textContent = todo.text;
+        resetTodoForm();
+      }
+      function resetTodoForm() {
+        editText.textContent = '';
+        todoBtn.textContent = 'Add Todo';
+        todoInput.value = '';
+        todoForm.removeAttribute('data-todo-id');
+      }
+      function createOrUpdateTodo(event) {
+        event.preventDefault();
+        const todoText = todoInput.value.trim();
+        if (todoText === '') {
+          window.alert('Enter todo text');
+          return;
+        }
+        const todoID = Number(todoForm.dataset.todoId);
+        if (Number.isNaN(todoID)) {
+          createTodo(todoText);
+          persistTodos();
+          return;
+        }
+        const todoIndex = allTodos.findIndex((todo) => todo.id === todoID);
+        if (todoIndex === -1) {
+          alert('Could not edit todo.');
+          return;
+        }
+        const existingTodo = allTodos[todoIndex];
+        const todo = {
+          ...existingTodo,
+          text: todoText,
+        };
+        allTodos.splice(todoIndex, 1, todo);
+        updateTodo(todo);
+        persistTodos();
+      }
+      function retrieveTodos() {
+        const todos = window.localStorage.getItem('todos');
+        if (!todos) {
+          return;
+        }
+        try {
+          allTodos.push(...JSON.parse(todos));
+          addTodo(...allTodos);
+        } catch {
+          console.error('Could not deserialize todos');
+        }
+      }
+      function persistTodos() {
+        window.localStorage.setItem('todos', JSON.stringify(allTodos));
+      }
+      function searchTodos(event) {
+        const text = event.target.value;
+        const regex = new RegExp(text, 'gi');
+        const todoIDs = allTodos
+          .filter((todo) => todo.text.search(regex) !== -1)
+          .map((item) => item.id);
+        todoList.querySelectorAll('li').forEach((listItem) => {
+          const todoID = Number(listItem.dataset.todoId);
+          const match = todoIDs.indexOf(todoID) !== -1;
+          if (!match) {
+            listItem.classList.add('invinsible', 'd-none');
+            return;
+          }
+          listItem.classList.remove('invinsible', 'd-none');
+        });
+      }
+      window.addEventListener('DOMContentLoaded', retrieveTodos);
+      todoForm.addEventListener('submit', createOrUpdateTodo);
+      searchInput.addEventListener('input', searchTodos);
+    </script>
   </body>
 </html>
