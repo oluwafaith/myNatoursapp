@@ -41,4 +41,13 @@ app.use(function(err:HttpError, req:Request, res:Response, next:NextFunction) {
   res.render('error');
 });
 
+
+
+NODE_ENV=development
+PORT=3000
+USERNAME=faith
+PASSWORD=123456
+DATABASE=mongodb+srv://oluwafaith:<PASSWORD>@cluster0.kynyh.mongodb.net/natours?retryWrites=true&w=majority
+DATABASE_PASSWORD=rGJQ9Dykl4R80Wj0
+
 export default app;
