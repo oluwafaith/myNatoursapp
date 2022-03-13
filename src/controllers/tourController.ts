@@ -156,7 +156,8 @@ export const aliasTopTours = (req: express.Request, res: express.Response, next:
   
   export const getMonthlyPlan = async (req:express.Request, res:express.Response) => {
     try {
-      const year = req.params.year * 1; // 2021
+     
+      const year = +req.params.year * 1; 
   
       const plan = await Tour.aggregate([
         {
