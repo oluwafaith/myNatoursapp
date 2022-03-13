@@ -6,6 +6,11 @@ import {
    getTour,
     updateTour, 
     deleteTour, 
+    aliasTopTours,
+    getTourStats,
+    getMonthlyPlan,
+
+
     // checkID,
     // checkBody
   } from "../controllers/tourController";
@@ -15,6 +20,13 @@ const router = express.Router();
 
 // /* GET home page. */
 // router.param('id', checkID)
+router
+  .route('/top-5-cheap')
+  .get(aliasTopTours, getAllTours);
+
+router.route('/tour-stats').get(getTourStats);
+router.route('/monthly-plan/:year').get(getMonthlyPlan);
+
 
 router
 .route('/')
